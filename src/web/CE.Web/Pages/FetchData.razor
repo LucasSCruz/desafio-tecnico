@@ -1,0 +1,85 @@
+﻿@page "/fetchdata"
+
+<PageTitle>Saque</PageTitle>
+
+@using CE.Web.Data
+
+<link href="css/styles.css" rel="stylesheet" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400&display=swap" rel="stylesheet">
+
+<div class="container">
+     <div class="wrapper">
+        <section class="content">
+            <h1>Solicite seu Saque</h1>
+            <h2>Modelo de saque ilimitado!</h2>
+            <h3>Notas disponíveis</h3>
+            <div class="cedulas">
+                <div class="nota">
+                    R$ 100
+                </div>
+                <div class="nota">
+                    R$ 500
+                </div>
+                <div class="nota">
+                    R$ 20
+                </div>
+                <div class="nota">
+                    R$ 10
+                </div>
+            </div>
+        </section>
+        <form style="margin-top: 50px;" @onsubmit="ObterNotas">
+            <label for="valorSaque">Valor de saque:</label>
+            <input type="number" id="valorSaque" @bind="valor" step="0.01" placeholder="Digite o valor de saque"><br><br>
+            <button type="submit">Confirmar</button>
+        </form>
+
+        @if (!string.IsNullOrEmpty(resultado))
+        {
+            <div style="margin-top: 20px; color: green;">
+                @((MarkupString)resultado)
+            </div>
+        }
+    </div>
+ 
+</div>
+
+
+
+
+
+
+@code {
+    private decimal valor;
+    private string resultado;
+
+    private void ObterNotas()
+    {
+        resultado = string.Empty;
+
+        if (valor <= 0)
+        {
+            resultado = "O valor deve ser maior que zero.";
+        }
+        else
+        {
+            // Restante do seu código para calcular as notas
+            decimal[] cedulas = { 100, 50, 20, 10 };
+
+            foreach (decimal cedula in cedulas)
+            {
+                int quantidade = (int)(valor / cedula);
+                valor %= cedula;
+                if (quantidade > 0)
+                    resultado += $"Nota: {cedula:C2} Quantidade: {quantidade} <br>";
+            }
+
+            if (valor > 0)
+            {
+                resultado += $"Não é possível dividir o valor exatamente com as cédulas fornecidas. Sobrou {valor:C2}.";
+            }
+        }
+    }
+}
